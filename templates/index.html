@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steam Авторизация</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+        .container {
+            max-width: 600px;
+            width: 90%;
+            margin: 0 auto;
+        }
+        .card {
+            background: rgba(30, 30, 46, 0.9);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: white;
+            margin-bottom: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .btn-steam {
+            background: #171a21;
+            color: white;
+            border: 2px solid #2a475e;
+        }
+        .btn-steam:hover {
+            background: #2a475e;
+        }
+        .btn-logout {
+            background: #c41e3a;
+            color: white;
+        }
+        .avatar {
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            margin: 20px auto;
+            border: 3px solid #2a475e;
+        }
+        .user-info {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 12px;
+            margin: 20px 0;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            {% if user %}
+                <h1>Добро пожаловать, {{ user.nickname }}! 🎮</h1>
+                {% if user.avatar %}
+                    <img src="{{ user.avatar }}" alt="Аватар" class="avatar">
+                {% endif %}
+                <div class="user-info">
+                    <p><strong>Steam ID:</strong> {{ user.steam_id }}</p>
+                    <p><strong>Никнейм:</strong> {{ user.nickname }}</p>
+                    {% if user.profile_url %}
+                        <p><a href="{{ user.profile_url }}" target="_blank" style="color: #66c0f4;">Открыть профиль Steam</a></p>
+                    {% endif %}
+                </div>
+                <a href="/logout" class="btn btn-logout">Выйти</a>
+            {% else %}
+                <h1>Вход через Steam</h1>
+                <p style="color: #aaa;">Нажмите на кнопку ниже, чтобы войти с помощью вашего аккаунта Steam</p>
+                <a href="/login/steam" class="btn btn-steam">🔵 Войти через Steam</a>
+                <p style="font-size: 0.8rem; color: #666; margin-top: 20px;">
+                    Ваши логин и пароль Steam никогда не передаются этому сайту.<br>
+                    Вся авторизация происходит на официальных серверах Steam.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
