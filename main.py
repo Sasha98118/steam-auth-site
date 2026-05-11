@@ -85,7 +85,10 @@ async def home(request: Request):
 @app.get("/login/steam")
 async def steam_login():
     """Шаг 1 авторизации через OpenID 2.0"""
-    return_url = "http://localhost:8000/auth/steam/callback"
+    DOMAIN = os.getenv("DOMAIN", "localhost:8000")
+    PROTOCOL = "https" if os.getenv("USE_HTTPS", "False") == "True" else "http"
+    
+    return_url = f"{PROTOCOL}://{DOMAIN}/auth/steam/callback"
     
     params = {
         "openid.ns": "http://specs.openid.net/auth/2.0",
@@ -176,7 +179,7 @@ async def steam_callback(request: Request):
         value=session_token,
         max_age=60*60*24*30,
         httponly=True,
-        secure=False,
+        secure=True,
         samesite="lax"
     )
     
