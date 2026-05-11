@@ -85,7 +85,7 @@ async def home(request: Request):
 @app.get("/login/steam")
 async def steam_login():
     """Шаг 1 авторизации через OpenID 2.0"""
-    DOMAIN = os.getenv("DOMAIN", "localhost:8000")
+    DOMAIN = os.getenv("DOMAIN", "https://steam-auth-site.onrender.com")
     PROTOCOL = "https" if os.getenv("USE_HTTPS", "False") == "True" else "http"
     
     return_url = f"{PROTOCOL}://{DOMAIN}/auth/steam/callback"
@@ -94,7 +94,7 @@ async def steam_login():
         "openid.ns": "http://specs.openid.net/auth/2.0",
         "openid.mode": "checkid_setup",
         "openid.return_to": return_url,
-        "openid.realm": "http://localhost:8000",
+        "openid.realm": "https://steam-auth-site.onrender.com",
         "openid.identity": "http://specs.openid.net/auth/2.0/identifier_select",
         "openid.claimed_id": "http://specs.openid.net/auth/2.0/identifier_select"
     }
