@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PCS — киберспортивная компания с авторизацией через Steam</title>
+    <title>PCS — киберспортивная компания</title>
     <style>
-        /* ===== ОСНОВНЫЕ СТИЛИ (скопированы и адаптированы с вашего примера) ===== */
+        /* ===== ОСНОВНЫЕ СТИЛИ (один в один с pcscyber.ru) ===== */
         * {
             margin: 0;
             padding: 0;
@@ -13,162 +13,232 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #0a0c10;
-            color: #e0e0e0;
-            line-height: 1.6;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #0b0d11;
+            color: #e8e9f0;
+            line-height: 1.5;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1280px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 32px;
         }
 
-        /* Шапка сайта */
+        /* ===== ПРЕЛОАДЕР (строгий, без смайликов) ===== */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0b0d11;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        .preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .preloader-spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(255, 70, 84, 0.2);
+            border-top: 3px solid #ff4654;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .preloader-text {
+            text-align: center;
+            color: #8e9aaf;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== ШАПКА И АВТОРИЗАЦИЯ ===== */
         .header {
-            background-color: rgba(10, 12, 16, 0.95);
             position: sticky;
             top: 0;
+            background: rgba(11, 13, 17, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #20232c;
+            padding: 16px 0;
             z-index: 100;
-            border-bottom: 1px solid #2c3038;
-            padding: 15px 0;
         }
-
         .header .container {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
         }
-
         .logo {
             font-size: 1.8rem;
-            font-weight: bold;
+            font-weight: 700;
             color: #fff;
+            letter-spacing: -0.5px;
         }
         .logo span {
-            color: #ff4654; /* Акцентный цвет, как в CS:GO */
+            color: #ff4654;
         }
-
-        /* БЛОК АВТОРИЗАЦИИ (справа) */
+        /* Блок авторизации — ровно в правом углу */
         .auth-area {
             display: flex;
             align-items: center;
-            gap: 15px;
+        }
+        .btn-pcs {
+            background: transparent;
+            border: 1px solid #ff4654;
+            color: #ff4654;
+            padding: 8px 20px;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-pcs:hover {
+            background: #ff4654;
+            color: #fff;
+            box-shadow: 0 0 12px rgba(255, 70, 84, 0.4);
         }
         .user-info {
             display: flex;
             align-items: center;
-            gap: 10px;
-            background: #1e2128;
-            padding: 5px 15px 5px 10px;
-            border-radius: 40px;
+            gap: 12px;
+            background: #1a1d26;
+            padding: 4px 16px 4px 8px;
+            border-radius: 60px;
+            border: 1px solid #2c303b;
         }
         .user-avatar {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             border: 2px solid #ff4654;
         }
         .user-nickname {
-            font-weight: 600;
-            color: white;
-        }
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            border: none;
-            cursor: pointer;
+            font-weight: 500;
             font-size: 0.9rem;
         }
-        .btn-steam {
-            background-color: #171a21;
-            color: white;
-            border: 1px solid #4d6a8f;
-        }
-        .btn-steam:hover {
-            background-color: #2a3b4e;
-            border-color: #8bb0d4;
-        }
         .btn-logout {
-            background-color: #3a2c2f;
-            color: #ff8a92;
-            padding: 5px 12px;
+            background: none;
+            border: none;
+            color: #8e9aaf;
             font-size: 0.8rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 30px;
+            transition: 0.2s;
         }
         .btn-logout:hover {
-            background-color: #5a3e44;
+            color: #ff4654;
+            background: rgba(255, 70, 84, 0.1);
         }
 
-        /* Герой-блок */
+        /* ===== ОСНОВНЫЕ БЛОКИ (как на pcscyber.ru) ===== */
         .hero {
             text-align: center;
-            padding: 100px 0;
-            background: linear-gradient(135deg, #0e1117 0%, #1a1f2b 100%);
+            padding: 100px 0 80px;
+            background: radial-gradient(circle at 10% 30%, #12161f, #0b0d11);
         }
         .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
+            font-size: 3.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, #bcbdd6 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 24px;
         }
         .hero p {
             font-size: 1.2rem;
             max-width: 800px;
             margin: 0 auto;
-            color: #b0b7c9;
+            color: #a9b2ce;
         }
-
-        /* Карточки и общие блоки */
         .section {
             padding: 80px 0;
-            border-bottom: 1px solid #23272e;
+            border-bottom: 1px solid #1e212a;
         }
         .section-title {
             text-align: center;
-            font-size: 2.2rem;
-            margin-bottom: 50px;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 48px;
+            color: #f0f2fa;
         }
-        .event-card, .news-card {
-            background: #161a22;
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
-            border-left: 4px solid #ff4654;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        .event-card {
+            background: #13161f;
+            border-radius: 28px;
+            padding: 32px;
+            max-width: 700px;
+            margin: 0 auto 32px;
+            border: 1px solid #262b36;
+            transition: 0.2s;
         }
         .event-date {
-            font-size: 0.9rem;
             color: #ff4654;
-            font-weight: bold;
-            margin-bottom: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
         }
-        .event-title, .news-title {
-            font-size: 1.6rem;
-            margin-bottom: 15px;
+        .event-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 16px;
         }
-        .event-desc, .news-text {
-            color: #b0b7c9;
+        .event-desc {
+            color: #b1bbd8;
         }
-
         .news-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 30px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            margin-top: 24px;
         }
-        .news-card .quote {
+        .news-card {
+            background: #13161f;
+            border-radius: 24px;
+            padding: 28px 24px;
+            border: 1px solid #262b36;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .news-card:hover {
+            border-color: #ff4654;
+            transform: translateY(-4px);
+        }
+        .news-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+        .news-title {
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .news-text, .quote {
+            color: #b1bbd8;
+            line-height: 1.45;
+        }
+        .quote {
             font-style: italic;
             border-left: 3px solid #ff4654;
-            padding-left: 20px;
-            margin: 15px 0;
+            padding-left: 16px;
+            margin-top: 16px;
         }
-
         /* Контакты */
         .contacts {
             text-align: center;
@@ -176,388 +246,151 @@
         .social-links {
             display: flex;
             justify-content: center;
-            gap: 30px;
-            margin-top: 30px;
+            gap: 28px;
+            margin-top: 32px;
         }
         .social-link {
-            color: #e0e0e0;
+            background: #1a1d26;
+            padding: 12px 32px;
+            border-radius: 60px;
+            color: #e8e9f0;
             text-decoration: none;
-            font-size: 1.1rem;
-            background: #1e2128;
-            padding: 10px 25px;
-            border-radius: 40px;
+            font-weight: 500;
             transition: 0.2s;
+            border: 1px solid #2c303b;
         }
         .social-link:hover {
             background: #ff4654;
+            border-color: #ff4654;
             color: white;
         }
-
         footer {
             text-align: center;
-            padding: 30px;
+            padding: 32px;
             background: #080a0e;
             font-size: 0.8rem;
+            color: #6e7a96;
         }
 
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2rem; }
-            .section-title { font-size: 1.6rem; }
-            .header .container { flex-direction: column; gap: 15px; }
+        @media (max-width: 900px) {
+            .news-grid { grid-template-columns: repeat(2, 1fr); }
+            .hero h1 { font-size: 2.3rem; }
+        }
+        @media (max-width: 640px) {
+            .news-grid { grid-template-columns: 1fr; }
+            .header .container { flex-direction: column; gap: 12px; }
             .auth-area { width: 100%; justify-content: center; }
         }
     </style>
 </head>
 <body>
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Steam Авторизация</title>
-    <style>
-        /* ========== ПРЕЛОАДЕР (страница загрузки) ========== */
-        .preloader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
-        }
-        
-        .preloader.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-        
-        .preloader-content {
-            text-align: center;
-            color: white;
-        }
-        
-        /* Стили для спиннера (кольцо загрузки) */
-        .loader {
-            width: 60px;
-            height: 60px;
-            border: 5px solid rgba(255, 255, 255, 0.2);
-            border-top: 5px solid #66c0f4;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px auto;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* Текст загрузки с анимацией точек */
-        .loading-text {
-            font-size: 1.2rem;
-            margin-top: 20px;
-            letter-spacing: 2px;
-        }
-        
-        .loading-text span {
-            animation: blink 1.4s infinite;
-            animation-fill-mode: both;
-        }
-        
-        .loading-text span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-        
-        .loading-text span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-        
-        @keyframes blink {
-            0%, 80%, 100% { opacity: 0; }
-            40% { opacity: 1; }
-        }
-        
-        /* Сообщение о первом запуске (для Render) */
-        .warmup-hint {
-            margin-top: 30px;
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.5);
-            font-family: monospace;
-        }
-        
-        /* ========== ОСНОВНОЙ СТИЛЬ САЙТА ========== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #eee;
-        }
-
-        .container {
-            max-width: 600px;
-            width: 90%;
-            margin: 0 auto;
-        }
-
-        .login-card, .profile-card {
-            background: rgba(30, 30, 46, 0.9);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        h1 {
-            margin-bottom: 20px;
-            font-size: 1.8rem;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 14px 32px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            margin: 20px 0;
-        }
-
-        .btn-steam {
-            background: #171a21;
-            color: white;
-            border: 2px solid #2a475e;
-        }
-
-        .btn-steam:hover {
-            background: #2a475e;
-            transform: scale(1.02);
-        }
-
-        .btn-logout {
-            background: #c41e3a;
-            color: white;
-        }
-
-        .btn-logout:hover {
-            background: #a01830;
-        }
-
-        .avatar {
-            border-radius: 50%;
-            width: 120px;
-            height: 120px;
-            margin: 20px auto;
-            border: 3px solid #2a475e;
-        }
-
-        .user-info {
-            background: rgba(0,0,0,0.3);
-            padding: 15px;
-            border-radius: 12px;
-            margin: 20px 0;
-            text-align: left;
-        }
-
-        .user-info p {
-            margin: 8px 0;
-        }
-
-        .user-info a {
-            color: #66c0f4;
-            text-decoration: none;
-        }
-
-        .info-note {
-            font-size: 0.8rem;
-            color: #aaa;
-            margin-top: 20px;
-        }
-        
-        /* Скрываем основной контент до загрузки */
-        .main-content {
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-        
-        .main-content.visible {
-            opacity: 1;
-        }
-    </style>
-</head>
-<body>
-
-    <!-- ПРЕЛОАДЕР -->
+    <!-- ===== ПРЕЛОАДЕР (строгий, без смайликов) ===== -->
     <div id="preloader" class="preloader">
-        <div class="preloader-content">
-            <div class="loader"></div>
-            <div class="loading-text">
-                Загрузка<span>.</span><span>.</span><span>.</span>
-            </div>
-            <div class="warmup-hint">
-                🔥 Первый запуск может занять до 30 секунд
-            </div>
+        <div>
+            <div class="preloader-spinner"></div>
+            <div class="preloader-text">Идет загрузка... Пожалуйста, подождите</div>
         </div>
     </div>
 
-    <!-- ОСНОВНОЙ КОНТЕНТ (будет показан после загрузки) -->
-    <div id="mainContent" class="main-content">
+    <!-- ШАПКА САЙТА -->
+    <header class="header">
         <div class="container">
-            {% if user %}
-                <div class="profile-card">
-                    <h1>Добро пожаловать, {{ user.nickname }}! 🎮</h1>
-                    {% if user.avatar %}
-                        <img src="{{ user.avatar }}" alt="Аватар" class="avatar">
-                    {% endif %}
-                    <div class="user-info">
-                        <p><strong>Steam ID:</strong> {{ user.steam_id }}</p>
-                        <p><strong>Никнейм:</strong> {{ user.nickname }}</p>
-                        {% if user.profile_url %}
-                            <p><a href="{{ user.profile_url }}" target="_blank">Открыть профиль Steam</a></p>
-                        {% endif %}
-                    </div>
-                    <a href="/logout" class="btn btn-logout">Выйти</a>
-                </div>
-            {% else %}
-                <div class="login-card">
-                    <h1>Вход через Steam</h1>
-                    <p>Нажмите на кнопку ниже, чтобы войти с помощью вашего аккаунта Steam</p>
-                    <a href="/login/steam" class="btn btn-steam">
-                        🔵 Войти через Steam
-                    </a>
-                    <p class="info-note">
-                        Ваши логин и пароль Steam никогда не передаются этому сайту.<br>
-                        Вся авторизация происходит на официальных серверах Steam.
-                    </p>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-
-    <script>
-        // Прелоадер: скрываем его, когда страница полностью загружена
-        window.addEventListener('load', function() {
-            // Небольшая задержка, чтобы пользователь видел анимацию
-            setTimeout(function() {
-                var preloader = document.getElementById('preloader');
-                var mainContent = document.getElementById('mainContent');
-                
-                preloader.classList.add('hidden');
-                mainContent.classList.add('visible');
-                
-                // Удаляем прелоадер из DOM после анимации
-                setTimeout(function() {
-                    preloader.style.display = 'none';
-                }, 500);
-            }, 800);  // Задержка 0.8 секунды (можно убрать или изменить)
-        });
-        
-        // Дополнительная проверка: если страница грузится слишком долго,
-        // показываем дополнительное сообщение (актуально для Render)
-        setTimeout(function() {
-            var warmupHint = document.querySelector('.warmup-hint');
-            if (warmupHint && !document.getElementById('preloader').classList.contains('hidden')) {
-                warmupHint.style.color = '#66c0f4';
-                warmupHint.innerHTML = '⏳ Сервер просыпается... Обычно это занимает 20-30 секунд на бесплатном тарифе';
-            }
-        }, 5000);  // Через 5 секунд показываем предупреждение
-    </script>
-</body>
-</html>
-<header class="header">
-    <div class="container">
-        <div class="logo">^<span>PCS</span>^</div>
-        <div class="auth-area">
-            <!-- Логика отображения: если пользователь авторизован -->
-            {% if user %}
+            <div class="logo">^<span>PCS</span>^</div>
+            <div class="auth-area">
+                {% if user %}
                 <div class="user-info">
                     {% if user.avatar %}
-                        <img src="{{ user.avatar }}" alt="Аватар" class="user-avatar">
+                    <img src="{{ user.avatar }}" alt="avatar" class="user-avatar">
                     {% endif %}
                     <span class="user-nickname">{{ user.nickname }}</span>
-                    <a href="/logout" class="btn btn-logout">Выйти</a>
+                    <a href="/logout" class="btn-logout">Выйти</a>
                 </div>
-            {% else %}
-                <a href="/login/steam" class="btn btn-steam">
-                    🔵 Войти через Steam
-                </a>
-            {% endif %}
-        </div>
-    </div>
-</header>
-
-<main>
-    <section class="hero">
-        <div class="container">
-            <h1>Добро пожаловать в мир киберспорта</h1>
-            <p>Киберспортивная компания <strong>^PCS^</strong> объединяет молодых людей, увлечённых компьютерными играми, и способствует популяризации киберспорта. Мы организуем и проводим турниры по Counter-Strike 2, продвигая этот вид спорта и предоставляя возможности развития и роста для талантливых игроков.</p>
-        </div>
-    </section>
-
-    <section class="section">
-        <div class="container">
-            <h2 class="section-title">Расписание мероприятий</h2>
-            <div class="event-card">
-                <div class="event-date">31 января 2026</div>
-                <div class="event-title">Турнир по Counter-Strike 2</div>
-                <div class="event-desc">Соревнование для команд 5x5. Призовой фонд уточняется. Начало регистрации — за 2 недели до турнира. Следите за новостями!</div>
-            </div>
-            <p style="text-align: center; margin-top: 20px;">Узнайте о предстоящих киберспортивных событиях, которые будут интересны всем любителям этой захватывающей формы соревнований.</p>
-        </div>
-    </section>
-
-    <section class="section">
-        <div class="container">
-            <h2 class="section-title">Новости и события киберспорта</h2>
-            <div class="news-grid">
-                <div class="news-card">
-                    <div class="news-title">🇷🇺 Президент федерации киберспорта Дмитрий Смит оценил перспективы России</div>
-                    <div class="quote">"Интерес к российскому киберспорту есть везде. Начиная с того, что российских спортсменов с удовольствием берут в топ-клубы всего мира, заканчивая тем, что в Россию на соревнования люди приезжают с удовольствием."</div>
-                </div>
-                <div class="news-card">
-                    <div class="news-title">🏆 Владимир Путин о развитии киберспорта</div>
-                    <div class="quote">"Киберспорт — это инновационный вид спорта, развитие которого будет способствовать развитию спортивной отрасли в целом. Кроме того, это является одним из главных направлений молодежной политики — а значит, в конечном итоге, и важной составляющей развития страны."</div>
-                </div>
-                <div class="news-card">
-                    <div class="news-title">⚙️ В январе 2026 года пройдет турнир по CS2</div>
-                    <div class="news-text">Началась подготовка к организации турнира. Ведется работа с партнерами мероприятия. Разрабатывается программа. Следите за обновлениями.</div>
-                </div>
+                {% else %}
+                <a href="/login/steam" class="btn-pcs">^PCS^ | Войти через Steam</a>
+                {% endif %}
             </div>
         </div>
-    </section>
+    </header>
 
-    <section class="section contacts">
-        <div class="container">
-            <h2 class="section-title">Контакты</h2>
-            <p style="margin-bottom: 20px;">Пожалуйста, свяжитесь с нами для участия в турнирах, а также для получения дополнительной информации о каждом из них и о ваших возможностях.</p>
-            <div class="social-links">
-                <a href="https://vk.ru/club225215141" class="social-link" target="_blank">VKontakte</a>
-                <a href="https://t.me/pcs_cyber" class="social-link" target="_blank">Telegram</a>
+    <main>
+        <!-- ГЛАВНЫЙ ЭКРАН -->
+        <section class="hero">
+            <div class="container">
+                <h1>Добро пожаловать в мир киберспорта</h1>
+                <p>Киберспортивная компания <strong>^PCS^</strong> объединяет молодых людей, увлечённых компьютерными играми, и способствует популяризации киберспорта. Мы организуем и проводим турниры по Counter-Strike 2, продвигая этот вид спорта и предоставляя возможности развития и роста для талантливых игроков.</p>
             </div>
+        </section>
+
+        <!-- РАСПИСАНИЕ МЕРОПРИЯТИЙ -->
+        <section class="section">
+            <div class="container">
+                <h2 class="section-title">Расписание мероприятий</h2>
+                <div class="event-card">
+                    <div class="event-date">31 января 2026</div>
+                    <div class="event-title">Турнир по Counter-Strike 2</div>
+                    <div class="event-desc">Соревнование для команд 5x5. Призовой фонд уточняется. Начало регистрации — за 2 недели до турнира. Следите за новостями!</div>
+                </div>
+                <p style="text-align: center; margin-top: 20px; color:#8e9aaf;">Узнайте о предстоящих киберспортивных событиях, которые будут интересны всем любителям этой захватывающей формы соревнований.</p>
+            </div>
+        </section>
+
+        <!-- НОВОСТИ И СОБЫТИЯ (ГОРИЗОНТАЛЬНАЯ ЛЕНТА С ИКОНКАМИ) -->
+        <section class="section">
+            <div class="container">
+                <h2 class="section-title">Новости и события киберспорта</h2>
+                <div class="news-grid">
+                    <div class="news-card">
+                        <span class="news-icon">🇷🇺</span>
+                        <div class="news-title">Президент федерации киберспорта Дмитрий Смит оценил перспективы России</div>
+                        <div class="quote">"Интерес к российскому киберспорту есть везде. Начиная с того, что российских спортсменов с удовольствием берут в топ-клубы всего мира, заканчивая тем, что в Россию на соревнования люди приезжают с удовольствием."</div>
+                    </div>
+                    <div class="news-card">
+                        <span class="news-icon">🏆</span>
+                        <div class="news-title">Владимир Путин о развитии киберспорта</div>
+                        <div class="quote">"Киберспорт — это инновационный вид спорта, развитие которого будет способствовать развитию спортивной отрасли в целом. Кроме того, это является одним из главных направлений молодежной политики — а значит, в конечном итоге, и важной составляющей развития страны."</div>
+                    </div>
+                    <div class="news-card">
+                        <span class="news-icon">⚙️</span>
+                        <div class="news-title">В январе 2026 года пройдет турнир по CS2</div>
+                        <div class="news-text">Началась подготовка к организации турнира. Ведется работа с партнерами мероприятия. Разрабатывается программа. Следите за обновлениями.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- КОНТАКТЫ -->
+        <section class="section contacts">
+            <div class="container">
+                <h2 class="section-title">Контакты</h2>
+                <p>Пожалуйста, свяжитесь с нами для участия в турнирах, а также для получения дополнительной информации.</p>
+                <div class="social-links">
+                    <a href="https://vk.ru/club225215141" class="social-link" target="_blank">VKontakte</a>
+                    <a href="https://t.me/pcs_cyber" class="social-link" target="_blank">Telegram</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>© 2025 PCS Cyber. Все права защищены.</p>
         </div>
-    </section>
-</main>
+    </footer>
 
-<footer>
-    <div class="container">
-        <p>© 2025 PCS Cyber. Все права защищены. Твой старт в киберспорте с авторизацией через Steam.</p>
-    </div>
-</footer>
-
+    <script>
+        // Прелоадер с минимальной задержкой (строгий)
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                var preloader = document.getElementById('preloader');
+                if (preloader) {
+                    preloader.classList.add('hidden');
+                    setTimeout(function() {
+                        preloader.style.display = 'none';
+                    }, 500);
+                }
+            }, 600);
+        });
+    </script>
 </body>
 </html>
