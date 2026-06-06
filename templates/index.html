@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PCS — киберспортивная компания</title>
     <style>
-        /* ===== ОСНОВНЫЕ СТИЛИ ===== */
         * {
             margin: 0;
             padding: 0;
@@ -25,7 +24,7 @@
             padding: 0 32px;
         }
 
-        /* ===== ПРЕЛОАДЕР ===== */
+        /* Прелоадер */
         .preloader {
             position: fixed;
             top: 0;
@@ -37,11 +36,6 @@
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
-        }
-        .preloader.hidden {
-            opacity: 0;
-            visibility: hidden;
         }
         .preloader-spinner {
             width: 48px;
@@ -60,10 +54,9 @@
             text-align: center;
             color: #8e9aaf;
             font-size: 0.9rem;
-            letter-spacing: 0.5px;
         }
 
-        /* ===== ШАПКА И АВТОРИЗАЦИЯ ===== */
+        /* Шапка */
         .header {
             position: sticky;
             top: 0;
@@ -146,7 +139,7 @@
             background: rgba(255, 70, 84, 0.1);
         }
 
-        /* ===== ОСНОВНЫЕ БЛОКИ ===== */
+        /* Основные блоки */
         .hero {
             text-align: center;
             padding: 100px 0 80px;
@@ -185,7 +178,6 @@
             max-width: 700px;
             margin: 0 auto 32px;
             border: 1px solid #262b36;
-            transition: 0.2s;
         }
         .event-date {
             color: #ff4654;
@@ -239,7 +231,7 @@
             margin-top: 16px;
         }
 
-        /* ===== БЛОК ИГРОВОГО СЕРВЕРА ===== */
+        /* Блок сервера */
         .server-status-block {
             background: #13161f;
             border-radius: 28px;
@@ -284,12 +276,6 @@
             box-shadow: 0 0 20px rgba(255, 70, 84, 0.5);
             transform: translateY(-2px);
         }
-        .btn-play:disabled {
-            background: #555;
-            box-shadow: none;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
         .btn-play .pulse {
             width: 12px;
             height: 12px;
@@ -307,30 +293,8 @@
             margin-top: 20px;
             color: #8e9aaf;
         }
-        .server-error-text {
-            text-align: center;
-            color: #ff4654;
-        }
-        .players-list {
-            margin-top: 12px;
-            text-align: left;
-            max-height: 120px;
-            overflow-y: auto;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 12px;
-            padding: 12px;
-        }
-        .players-list .player-name {
-            color: #b1bbd8;
-            padding: 3px 0;
-            font-size: 0.9rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .players-list .player-name:last-child {
-            border-bottom: none;
-        }
 
-        /* ===== КОНТАКТЫ ===== */
+        /* Контакты */
         .contacts {
             text-align: center;
         }
@@ -376,15 +340,15 @@
 </head>
 <body>
 
-    <!-- ===== ПРЕЛОАДЕР ===== -->
+    <!-- Прелоадер -->
     <div id="preloader" class="preloader">
         <div>
             <div class="preloader-spinner"></div>
-            <div class="preloader-text">Идет загрузка... Пожалуйста, подождите</div>
+            <div class="preloader-text">Загрузка...</div>
         </div>
     </div>
 
-    <!-- ШАПКА САЙТА -->
+    <!-- Шапка -->
     <header class="header">
         <div class="container">
             <div class="logo">^<span>PCS</span>^</div>
@@ -405,67 +369,64 @@
     </header>
 
     <main>
-        <!-- ГЛАВНЫЙ ЭКРАН -->
+        <!-- Главный экран -->
         <section class="hero">
             <div class="container">
                 <h1>Добро пожаловать в мир киберспорта</h1>
-                <p>Киберспортивная компания <strong>^PCS^</strong> объединяет молодых людей, увлечённых компьютерными играми, и способствует популяризации киберспорта. Мы организуем и проводим турниры по Counter-Strike 2, продвигая этот вид спорта и предоставляя возможности развития и роста для талантливых игроков.</p>
+                <p>Киберспортивная компания <strong>^PCS^</strong> объединяет молодых людей, увлечённых компьютерными играми, и способствует популяризации киберспорта.</p>
             </div>
         </section>
 
-        <!-- РАСПИСАНИЕ МЕРОПРИЯТИЙ -->
+        <!-- Блок сервера (только для авторизованных) -->
+        {% if user %}
+        <section class="section">
+            <div class="container">
+                <div id="server-container"></div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Расписание -->
         <section class="section">
             <div class="container">
                 <h2 class="section-title">Расписание мероприятий</h2>
                 <div class="event-card">
                     <div class="event-date">31 января 2026</div>
                     <div class="event-title">Турнир по Counter-Strike 2</div>
-                    <div class="event-desc">Соревнование для команд 5x5. Призовой фонд уточняется. Начало регистрации — за 2 недели до турнира. Следите за новостями!</div>
-                </div>
-                <p style="text-align: center; margin-top: 20px; color:#8e9aaf;">Узнайте о предстоящих киберспортивных событиях, которые будут интересны всем любителям этой захватывающей формы соревнований.</p>
-            </div>
-        </section>
-
-        <!-- БЛОК ИГРОВОГО СЕРВЕРА (только для авторизованных) -->
-        {% if user %}
-        <section class="section">
-            <div class="container">
-                <div id="server-container">
-                    <!-- Заполняется JavaScript -->
+                    <div class="event-desc">Соревнование для команд 5x5. Призовой фонд уточняется.</div>
                 </div>
             </div>
         </section>
-        {% endif %}
 
-        <!-- НОВОСТИ И СОБЫТИЯ -->
+        <!-- Новости -->
         <section class="section">
             <div class="container">
                 <h2 class="section-title">Новости и события киберспорта</h2>
                 <div class="news-grid">
                     <div class="news-card">
                         <span class="news-icon">🇷🇺</span>
-                        <div class="news-title">Президент федерации киберспорта Дмитрий Смит оценил перспективы России</div>
-                        <div class="quote">"Интерес к российскому киберспорту есть везде. Начиная с того, что российских спортсменов с удовольствием берут в топ-клубы всего мира, заканчивая тем, что в Россию на соревнования люди приезжают с удовольствием."</div>
+                        <div class="news-title">Президент федерации киберспорта</div>
+                        <div class="quote">"Интерес к российскому киберспорту есть везде."</div>
                     </div>
                     <div class="news-card">
                         <span class="news-icon">🏆</span>
                         <div class="news-title">Владимир Путин о развитии киберспорта</div>
-                        <div class="quote">"Киберспорт — это инновационный вид спорта, развитие которого будет способствовать развитию спортивной отрасли в целом. Кроме того, это является одним из главных направлений молодежной политики — а значит, в конечном итоге, и важной составляющей развития страны."</div>
+                        <div class="quote">"Киберспорт — это инновационный вид спорта."</div>
                     </div>
                     <div class="news-card">
                         <span class="news-icon">⚙️</span>
-                        <div class="news-title">В январе 2026 года пройдет турнир по CS2</div>
-                        <div class="news-text">Началась подготовка к организации турнира. Ведется работа с партнерами мероприятия. Разрабатывается программа. Следите за обновлениями.</div>
+                        <div class="news-title">Турнир по CS2 в январе 2026</div>
+                        <div class="news-text">Началась подготовка к организации турнира.</div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- КОНТАКТЫ -->
+        <!-- Контакты -->
         <section class="section contacts">
             <div class="container">
                 <h2 class="section-title">Контакты</h2>
-                <p>Пожалуйста, свяжитесь с нами для участия в турнирах, а также для получения дополнительной информации.</p>
+                <p>Свяжитесь с нами для участия в турнирах.</p>
                 <div class="social-links">
                     <a href="https://vk.ru/club225215141" class="social-link" target="_blank">VKontakte</a>
                     <a href="https://t.me/pcs_cyber" class="social-link" target="_blank">Telegram</a>
@@ -481,29 +442,82 @@
     </footer>
 
     <script>
-        // Прелоадер с минимальной задержкой
+        // Сразу скрываем прелоадер
+        (function() {
+            var preloader = document.getElementById('preloader');
+            if (preloader) {
+                preloader.style.display = 'none';
+            }
+        })();
+        
+        // На всякий случай скрываем ещё раз после загрузки
         window.addEventListener('load', function() {
-            setTimeout(function() {
-                var preloader = document.getElementById('preloader');
-                if (preloader) {
-                    preloader.classList.add('hidden');
-                    setTimeout(function() {
-                        preloader.style.display = 'none';
-                    }, 500);
-                }
-            }, 600);
+            var preloader = document.getElementById('preloader');
+            if (preloader) {
+                preloader.style.display = 'none';
+            }
         });
-
-        // ============================================================
-        // ФУНКЦИИ ДЛЯ РАБОТЫ С ИГРОВЫМ СЕРВЕРОМ
-        // ============================================================
-
-        // Функция для проверки статуса сервера и отображения кнопки
+        
+        // Функция запроса статуса сервера
         async function fetchServerStatus() {
-            const container = document.getElementById('server-container');
+            var container = document.getElementById('server-container');
             if (!container) return;
-
+            
             try {
-                const response = await fetch('/api/server/status');
+                var response = await fetch('/api/server/status');
+                
                 if (response.status === 401) {
-                    // Пользователь не авторизован
+                    container.innerHTML = '';
+                    return;
+                }
+                
+                var data = await response.json();
+                
+                var statusColor = data.status === 'online' ? '#4caf50' : '#ff4654';
+                var statusText = data.status || 'offline';
+                
+                var html = '<div class="server-status-block">';
+                html += '<h3>' + (data.server_name || 'CS2 Сервер') + '</h3>';
+                html += '<div class="server-detail"><span class="label">Статус:</span> <span style="color: ' + statusColor + ';">' + statusText + '</span></div>';
+                html += '<div class="server-detail"><span class="label">Карта:</span> ' + (data.map_name || '—') + '</div>';
+                html += '<div class="server-detail"><span class="label">Игроки:</span> ' + (data.player_count || 0) + ' / ' + (data.max_players || '?') + '</div>';
+                
+                if (data.status === 'online') {
+                    html += '<button class="btn-play" onclick="connectToServer()"><span class="pulse"></span> Подключиться к серверу</button>';
+                } else {
+                    html += '<p class="server-offline-text">Сервер сейчас недоступен.</p>';
+                }
+                
+                html += '</div>';
+                container.innerHTML = html;
+                
+            } catch (error) {
+                console.log('Ошибка загрузки статуса сервера');
+                container.innerHTML = '<p style="text-align: center; color: #ff4654;">Не удалось загрузить статус сервера.</p>';
+            }
+        }
+        
+        // Функция подключения к серверу
+        async function connectToServer() {
+            try {
+                var response = await fetch('/api/server/connect');
+                
+                if (response.status === 401) {
+                    alert('Пожалуйста, авторизуйтесь через Steam.');
+                    window.location.href = '/login/steam';
+                    return;
+                }
+                
+                var data = await response.json();
+                window.location.href = data.connect_url;
+                
+            } catch (error) {
+                alert('Не удалось подключиться к серверу. Попробуйте позже.');
+            }
+        }
+        
+        // Запускаем проверку статуса
+        fetchServerStatus();
+    </script>
+</body>
+</html>
