@@ -272,10 +272,8 @@ async def api_server_connect(request: Request):
     if not CS2_SERVER_IP:
         raise HTTPException(status_code=500, detail="IP сервера не настроен")
     
-    # Возвращаемся к steam://connect/ — он открывает Steam
-    connection_string = f"steam://connect/{CS2_SERVER_IP}:{CS2_SERVER_PORT}"
-    if CS2_SERVER_PASSWORD:
-        connection_string += f"/{CS2_SERVER_PASSWORD}"
+    # Точный формат как на Cybershoke
+    connection_string = f"steam://rungameid/730//+connect {CS2_SERVER_IP}:{CS2_SERVER_PORT}"
     
     print(f"Сгенерирована ссылка для пользователя {user_sessions[session_token]['nickname']}")
     
