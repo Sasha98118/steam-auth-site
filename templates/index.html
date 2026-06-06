@@ -487,29 +487,29 @@
         }
         
         async function connectToServer() {
-            console.log('Кнопка нажата, запрашиваю ссылку...');
-            
-            try {
-                var response = await fetch('/api/server/connect');
-                console.log('Ответ API:', response.status);
-                
-                if (response.status === 401) {
-                    alert('Пожалуйста, авторизуйтесь через Steam.');
-                    window.location.href = '/login/steam';
-                    return;
-                }
-                
-                var data = await response.json();
-                console.log('Основная ссылка:', data.connect_url);
-                console.log('Резервная ссылка:', data.backup_url);
-                
-                window.location.href = data.connect_url;
-                
-            } catch (error) {
-                console.error('Ошибка:', error);
-                alert('Не удалось подключиться к серверу.');
-            }
+    console.log('Кнопка нажата, запрашиваю ссылку...');
+    
+    try {
+        var response = await fetch('/api/server/connect');
+        console.log('Ответ API:', response.status);
+        
+        if (response.status === 401) {
+            alert('Пожалуйста, авторизуйтесь через Steam.');
+            window.location.href = '/login/steam';
+            return;
         }
+        
+        var data = await response.json();
+        console.log('Ссылка:', data.connect_url);
+        
+        // Открываем ссылку
+        window.location.href = data.connect_url;
+        
+    } catch (error) {
+        console.error('Ошибка:', error);
+        alert('Не удалось подключиться к серверу.');
+    }
+}
         
         fetchServerStatus();
     </script>

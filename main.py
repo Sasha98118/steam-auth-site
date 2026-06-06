@@ -272,19 +272,15 @@ async def api_server_connect(request: Request):
     if not CS2_SERVER_IP:
         raise HTTPException(status_code=500, detail="IP сервера не настроен")
     
-    # Основной формат: steam://rungame/730 с параметрами (работает для CS2)
-    connection_string = f"steam://rungame/730//+connect%20{CS2_SERVER_IP}:{CS2_SERVER_PORT}"
-    
-    # Запасной формат: steam://connect (старый, может не работать)
-    backup_string = f"steam://connect/{CS2_SERVER_IP}:{CS2_SERVER_PORT}"
+    # Возвращаемся к steam://connect/ — он открывает Steam
+    connection_string = f"steam://connect/{CS2_SERVER_IP}:{CS2_SERVER_PORT}"
     if CS2_SERVER_PASSWORD:
-        backup_string += f"/{CS2_SERVER_PASSWORD}"
+        connection_string += f"/{CS2_SERVER_PASSWORD}"
     
     print(f"Сгенерирована ссылка для пользователя {user_sessions[session_token]['nickname']}")
     
     return {
-        "connect_url": connection_string,
-        "backup_url": backup_string
+        "connect_url": connection_string
     }
 
 if __name__ == "__main__":
