@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PCS — киберспортивная компания</title>
     <style>
-        /* ===== ОСНОВНЫЕ СТИЛИ (один в один с pcscyber.ru) ===== */
+        /* ===== ОСНОВНЫЕ СТИЛИ ===== */
         * {
             margin: 0;
             padding: 0;
@@ -25,7 +25,7 @@
             padding: 0 32px;
         }
 
-        /* ===== ПРЕЛОАДЕР (строгий, без смайликов) ===== */
+        /* ===== ПРЕЛОАДЕР ===== */
         .preloader {
             position: fixed;
             top: 0;
@@ -88,7 +88,6 @@
         .logo span {
             color: #ff4654;
         }
-        /* Блок авторизации — ровно в правом углу */
         .auth-area {
             display: flex;
             align-items: center;
@@ -147,7 +146,7 @@
             background: rgba(255, 70, 84, 0.1);
         }
 
-        /* ===== ОСНОВНЫЕ БЛОКИ (как на pcscyber.ru) ===== */
+        /* ===== ОСНОВНЫЕ БЛОКИ ===== */
         .hero {
             text-align: center;
             padding: 100px 0 80px;
@@ -239,7 +238,99 @@
             padding-left: 16px;
             margin-top: 16px;
         }
-        /* Контакты */
+
+        /* ===== БЛОК ИГРОВОГО СЕРВЕРА ===== */
+        .server-status-block {
+            background: #13161f;
+            border-radius: 28px;
+            padding: 32px;
+            max-width: 500px;
+            margin: 32px auto;
+            border: 1px solid #262b36;
+            text-align: center;
+        }
+        .server-status-block h3 {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+            color: #f0f2fa;
+        }
+        .server-detail {
+            color: #b1bbd8;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+        .server-detail .label {
+            font-weight: 600;
+            color: #8e9aaf;
+        }
+        .btn-play {
+            background: #ff4654;
+            border: none;
+            color: white;
+            padding: 14px 40px;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 24px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .btn-play:hover {
+            background: #e03e4b;
+            box-shadow: 0 0 20px rgba(255, 70, 84, 0.5);
+            transform: translateY(-2px);
+        }
+        .btn-play:disabled {
+            background: #555;
+            box-shadow: none;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        .btn-play .pulse {
+            width: 12px;
+            height: 12px;
+            background-color: #fff;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+        .server-offline-text {
+            margin-top: 20px;
+            color: #8e9aaf;
+        }
+        .server-error-text {
+            text-align: center;
+            color: #ff4654;
+        }
+        .players-list {
+            margin-top: 12px;
+            text-align: left;
+            max-height: 120px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 12px;
+        }
+        .players-list .player-name {
+            color: #b1bbd8;
+            padding: 3px 0;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .players-list .player-name:last-child {
+            border-bottom: none;
+        }
+
+        /* ===== КОНТАКТЫ ===== */
         .contacts {
             text-align: center;
         }
@@ -285,7 +376,7 @@
 </head>
 <body>
 
-    <!-- ===== ПРЕЛОАДЕР (строгий, без смайликов) ===== -->
+    <!-- ===== ПРЕЛОАДЕР ===== -->
     <div id="preloader" class="preloader">
         <div>
             <div class="preloader-spinner"></div>
@@ -335,7 +426,18 @@
             </div>
         </section>
 
-        <!-- НОВОСТИ И СОБЫТИЯ (ГОРИЗОНТАЛЬНАЯ ЛЕНТА С ИКОНКАМИ) -->
+        <!-- БЛОК ИГРОВОГО СЕРВЕРА (только для авторизованных) -->
+        {% if user %}
+        <section class="section">
+            <div class="container">
+                <div id="server-container">
+                    <!-- Заполняется JavaScript -->
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- НОВОСТИ И СОБЫТИЯ -->
         <section class="section">
             <div class="container">
                 <h2 class="section-title">Новости и события киберспорта</h2>
@@ -379,7 +481,7 @@
     </footer>
 
     <script>
-        // Прелоадер с минимальной задержкой (строгий)
+        // Прелоадер с минимальной задержкой
         window.addEventListener('load', function() {
             setTimeout(function() {
                 var preloader = document.getElementById('preloader');
@@ -391,6 +493,17 @@
                 }
             }, 600);
         });
-    </script>
-</body>
-</html>
+
+        // ============================================================
+        // ФУНКЦИИ ДЛЯ РАБОТЫ С ИГРОВЫМ СЕРВЕРОМ
+        // ============================================================
+
+        // Функция для проверки статуса сервера и отображения кнопки
+        async function fetchServerStatus() {
+            const container = document.getElementById('server-container');
+            if (!container) return;
+
+            try {
+                const response = await fetch('/api/server/status');
+                if (response.status === 401) {
+                    // Пользователь не авторизован

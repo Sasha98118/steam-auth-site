@@ -1,9 +1,7 @@
 services:
   - type: web
-    name: my-steam-site
-    runtime: python
-    repo: https://github.com/Sasha98118/steam-auth-site.git
-    plan: free
+    name: steam-auth-site
+    env: python
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
@@ -12,6 +10,20 @@ services:
       - key: SECRET_KEY
         sync: false
       - key: DOMAIN
-        value: my-steam-site.onrender.com
+        value: steam-auth-site.onrender.com
       - key: USE_HTTPS
         value: "True"
+      - key: CS2_SERVER_IP
+        sync: false
+      - key: CS2_SERVER_PORT
+        value: "7638"
+      - key: CS2_SERVER_PASSWORD
+        sync: false
+      - key: CS2_SERVER_NAME
+        value: "PCS Cyber CS2 Server"
+      - key: PTERO_API_URL
+        sync: false
+      - key: PTERO_API_KEY
+        sync: false
+      - key: PTERO_SERVER_ID
+        sync: false
