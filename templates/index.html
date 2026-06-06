@@ -24,7 +24,6 @@
             padding: 0 32px;
         }
 
-        /* Прелоадер */
         .preloader {
             position: fixed;
             top: 0;
@@ -56,7 +55,6 @@
             font-size: 0.9rem;
         }
 
-        /* Шапка */
         .header {
             position: sticky;
             top: 0;
@@ -139,7 +137,6 @@
             background: rgba(255, 70, 84, 0.1);
         }
 
-        /* Основные блоки */
         .hero {
             text-align: center;
             padding: 100px 0 80px;
@@ -231,7 +228,6 @@
             margin-top: 16px;
         }
 
-        /* Блок сервера */
         .server-status-block {
             background: #13161f;
             border-radius: 28px;
@@ -294,7 +290,6 @@
             color: #8e9aaf;
         }
 
-        /* Контакты */
         .contacts {
             text-align: center;
         }
@@ -340,7 +335,6 @@
 </head>
 <body>
 
-    <!-- Прелоадер -->
     <div id="preloader" class="preloader">
         <div>
             <div class="preloader-spinner"></div>
@@ -348,7 +342,6 @@
         </div>
     </div>
 
-    <!-- Шапка -->
     <header class="header">
         <div class="container">
             <div class="logo">^<span>PCS</span>^</div>
@@ -369,7 +362,6 @@
     </header>
 
     <main>
-        <!-- Главный экран -->
         <section class="hero">
             <div class="container">
                 <h1>Добро пожаловать в мир киберспорта</h1>
@@ -377,7 +369,6 @@
             </div>
         </section>
 
-        <!-- Блок сервера (только для авторизованных) -->
         {% if user %}
         <section class="section">
             <div class="container">
@@ -386,7 +377,6 @@
         </section>
         {% endif %}
 
-        <!-- Расписание -->
         <section class="section">
             <div class="container">
                 <h2 class="section-title">Расписание мероприятий</h2>
@@ -398,7 +388,6 @@
             </div>
         </section>
 
-        <!-- Новости -->
         <section class="section">
             <div class="container">
                 <h2 class="section-title">Новости и события киберспорта</h2>
@@ -422,7 +411,6 @@
             </div>
         </section>
 
-        <!-- Контакты -->
         <section class="section contacts">
             <div class="container">
                 <h2 class="section-title">Контакты</h2>
@@ -442,7 +430,6 @@
     </footer>
 
     <script>
-        // Сразу скрываем прелоадер
         (function() {
             var preloader = document.getElementById('preloader');
             if (preloader) {
@@ -457,7 +444,6 @@
             }
         });
         
-        // Функция запроса статуса сервера
         async function fetchServerStatus() {
             var container = document.getElementById('server-container');
             if (!container) return;
@@ -482,7 +468,7 @@
                 html += '<div class="server-detail"><span class="label">Игроки:</span> ' + (data.player_count || 0) + ' / ' + (data.max_players || '?') + '</div>';
                 
                 if (data.status === 'online') {
-                    html += '<a href="#" class="btn-play" onclick="connectToServer(event)"><span class="pulse"></span> Подключиться к серверу</a>';
+                    html += '<button class="btn-play" id="btn-connect"><span class="pulse"></span> Подключиться к серверу</button>';
                 } else {
                     html += '<p class="server-offline-text">Сервер сейчас недоступен.</p>';
                 }
@@ -490,17 +476,22 @@
                 html += '</div>';
                 container.innerHTML = html;
                 
+                var btn = document.getElementById('btn-connect');
+                if (btn) {
+                    btn.addEventListener('click', connectToServer);
+                }
+                
             } catch (error) {
                 container.innerHTML = '<p style="text-align: center; color: #ff4654;">Не удалось загрузить статус сервера.</p>';
             }
         }
         
-        // Функция подключения к серверу
-        async function connectToServer(event) {
-            event.preventDefault();
+        async function connectToServer() {
+            console.log('Кнопка нажата, запрашиваю ссылку...');
             
             try {
                 var response = await fetch('/api/server/connect');
+                console.log('Ответ API:', response.status);
                 
                 if (response.status === 401) {
                     alert('Пожалуйста, авторизуйтесь через Steam.');
@@ -509,16 +500,17 @@
                 }
                 
                 var data = await response.json();
+                console.log('Основная ссылка:', data.connect_url);
+                console.log('Резервная ссылка:', data.backup_url);
                 
-                // Открываем ссылку steam://connect в том же окне
                 window.location.href = data.connect_url;
                 
             } catch (error) {
-                alert('Не удалось подключиться к серверу. Попробуйте позже.');
+                console.error('Ошибка:', error);
+                alert('Не удалось подключиться к серверу.');
             }
         }
         
-        // Запускаем проверку статуса
         fetchServerStatus();
     </script>
 </body>
