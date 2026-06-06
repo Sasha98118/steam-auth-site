@@ -305,10 +305,7 @@ async def api_server_status(request: Request):
 
 @app.get("/api/server/connect")
 async def api_server_connect(request: Request):
-    """
-    Генерирует и возвращает безопасную ссылку для подключения к серверу.
-    Доступно только авторизованным пользователям.
-    """
+    """Генерирует и возвращает безопасную ссылку для подключения к серверу."""
     session_token = request.cookies.get("session_token")
     if not session_token or session_token not in user_sessions:
         raise HTTPException(status_code=401, detail="Требуется авторизация")
@@ -316,15 +313,25 @@ async def api_server_connect(request: Request):
     if not CS2_SERVER_IP:
         raise HTTPException(status_code=500, detail="IP сервера не настроен")
     
-    # Формируем ссылку для CS2
-    # Формат: steam://connect/IP:PORT/пароль
+    # Правильная ссылка для CS2
     connection_string = f"steam://connect/{CS2_SERVER_IP}:{CS2_SERVER_PORT}"
     if CS2_SERVER_PASSWORD:
         connection_string += f"/{CS2_SERVER_PASSWORD}"
     
-    print(f"Сгенерирована ссылка для пользователя {user_sessions[session_token]['nickname']}: {connection_string}")
+    # Команда для консоли
+    connect_command = f"connect {CS2_SERVER_IP}:{CS2_SERVER_PORT}"
+    if CS2_SERVER_PASSWORD:
+        connect_command += f"; password {CS2_SERVER_PASSWORD}"
     
-    return {"connect_url": connection_string}
+    print(f"Сгенерирована ссылка для пользователя {user_sessions[session_token]['nickname']}")
+    
+    return {
+        "connect_url": connection_string,
+        "ip": CS2_SERVER_IP,
+        "port": CS2_SERVER_PORT,
+        "password": CS2_SERVER_PASSWORD if CS2_SERVER_PASSWORD else None,
+        "connect_command": connect_command
+    }
 
 # ============================================================
 # ЗАПУСК ПРИЛОЖЕНИЯ

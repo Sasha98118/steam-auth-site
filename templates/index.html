@@ -450,7 +450,6 @@
             }
         })();
         
-        // На всякий случай скрываем ещё раз после загрузки
         window.addEventListener('load', function() {
             var preloader = document.getElementById('preloader');
             if (preloader) {
@@ -492,7 +491,6 @@
                 container.innerHTML = html;
                 
             } catch (error) {
-                console.log('Ошибка загрузки статуса сервера');
                 container.innerHTML = '<p style="text-align: center; color: #ff4654;">Не удалось загрузить статус сервера.</p>';
             }
         }
@@ -509,6 +507,8 @@
                 }
                 
                 var data = await response.json();
+                
+                // Сразу открываем ссылку steam://connect
                 window.location.href = data.connect_url;
                 
             } catch (error) {
