@@ -313,24 +313,15 @@ async def api_server_connect(request: Request):
     if not CS2_SERVER_IP:
         raise HTTPException(status_code=500, detail="IP сервера не настроен")
     
-    # Правильная ссылка для CS2
+    # Правильная ссылка steam://connect для CS2
     connection_string = f"steam://connect/{CS2_SERVER_IP}:{CS2_SERVER_PORT}"
     if CS2_SERVER_PASSWORD:
         connection_string += f"/{CS2_SERVER_PASSWORD}"
     
-    # Команда для консоли
-    connect_command = f"connect {CS2_SERVER_IP}:{CS2_SERVER_PORT}"
-    if CS2_SERVER_PASSWORD:
-        connect_command += f"; password {CS2_SERVER_PASSWORD}"
-    
     print(f"Сгенерирована ссылка для пользователя {user_sessions[session_token]['nickname']}")
     
     return {
-        "connect_url": connection_string,
-        "ip": CS2_SERVER_IP,
-        "port": CS2_SERVER_PORT,
-        "password": CS2_SERVER_PASSWORD if CS2_SERVER_PASSWORD else None,
-        "connect_command": connect_command
+        "connect_url": connection_string
     }
 
 # ============================================================

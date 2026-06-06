@@ -482,7 +482,7 @@
                 html += '<div class="server-detail"><span class="label">Игроки:</span> ' + (data.player_count || 0) + ' / ' + (data.max_players || '?') + '</div>';
                 
                 if (data.status === 'online') {
-                    html += '<button class="btn-play" onclick="connectToServer()"><span class="pulse"></span> Подключиться к серверу</button>';
+                    html += '<a href="#" class="btn-play" onclick="connectToServer(event)"><span class="pulse"></span> Подключиться к серверу</a>';
                 } else {
                     html += '<p class="server-offline-text">Сервер сейчас недоступен.</p>';
                 }
@@ -496,7 +496,9 @@
         }
         
         // Функция подключения к серверу
-        async function connectToServer() {
+        async function connectToServer(event) {
+            event.preventDefault();
+            
             try {
                 var response = await fetch('/api/server/connect');
                 
@@ -508,7 +510,7 @@
                 
                 var data = await response.json();
                 
-                // Сразу открываем ссылку steam://connect
+                // Открываем ссылку steam://connect в том же окне
                 window.location.href = data.connect_url;
                 
             } catch (error) {
